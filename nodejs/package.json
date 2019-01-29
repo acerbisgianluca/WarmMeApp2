@@ -10,14 +10,14 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "bluebird": "^3.5.1",
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "express": "^4.16.2",
-    "gpio": "^0.2.7",
-    "jsonwebtoken": "^8.1.0",
-    "mongoose": "^4.13.9",
-    "mqtt": "^2.15.1",
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "gpio": "^0.2.10",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^4.13.18",
+    "mqtt": "^2.18.8",
     "node-cron": "^1.2.1"
   }
 }

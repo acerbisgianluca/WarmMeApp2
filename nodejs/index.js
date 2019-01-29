@@ -1,27 +1,27 @@
-var express = require('express');
-var app = express();
-var cors = require('cors');
+let express = require('express');
+let app = express();
+let cors = require('cors');
 app.use(cors());
-var db = require('./db');
-var Sensors = require('./data/Sensors');
-var Sensor = require('./data/Sensor');
-var Area = require('./data/Area');
-var cron = require('./cron');
-var api = require('./api.js');
-var AuthController = require('./auth/AuthController');
+let db = require('./db');
+let Sensors = require('./data/Sensors');
+let Sensor = require('./data/Sensor');
+let Area = require('./data/Area');
+let cron = require('./cron');
+let api = require('./api.js');
+let AuthController = require('./auth/AuthController');
 app.use('/auth', AuthController);
 app.use('/api', api);
 app.listen(8080);
 
-var mqtt = require('mqtt');
+let mqtt = require('mqtt');
 
-var client  = mqtt.connect('mqtt://localhost');
+let client  = mqtt.connect('mqtt://localhost');
 
 function insert(obj) {
-    var temperatura = 0.00;
-    var umidità = 0.00;
-    var cont = 0;
-    var media = 0.00;
+    let temperatura = 0.00;
+    let umidità = 0.00;
+    let cont = 0;
+    let media = 0.00;
     Sensor.create({idSensore:obj.id,temperatura:obj.temperature,umidità:obj.humidity}, function(err, addedSensor){
         if(err)
             throw err;
