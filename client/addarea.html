@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="Baffoidi">
+	<title>Admin</title>
+	<link rel="icon" type="image/ico" href="./favicon.ico" />
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom fonts for this template-->
+	<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet"
+	 type="text/css">
+	<!-- Page level plugin CSS-->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+	<!-- Custom styles for this template-->
+	<link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<!-- Navigation-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		<a class="navbar-brand" href="#">Admin</a>
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+		 data-target="#navbarResponsive" aria-controls="navbarResponsive"
+		 aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="./index.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text">Dashboard</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="./areas.html">
+						<i class="fa fa-fw fa-dashboard"></i>
+						<span class="nav-link-text">Lista delle aree</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="./set.html">
+						<i class="fa fa-fw fa-sliders"></i>
+						<span class="nav-link-text">Imposta la temperatura</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="./passwordchange.html">
+						<i class="fa fa-fw fa-key"></i>
+						<span class="nav-link-text">Cambia password</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="./addsensor.html">
+						<i class="fa fa-fw fa-plus"></i>
+						<span class="nav-link-text">Aggiungi sensore</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+					<a class="nav-link" href="#">
+						<i class="fa fa-fw fa-plus"></i>
+						<span class="nav-link-text">Aggiungi area</span>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item">
+					<a class="nav-link text-center" id="sidenavToggler">
+						<i class="fa fa-fw fa-angle-left"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+						<i class="fa fa-fw fa-sign-out"></i>Logout</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item">
+					<a href="./index.html">Dashboard</a>
+				</li>
+				<li class="breadcrumb-item active">
+					Aggiungi area
+				</li>
+			</ol>
+			<!-- Example DataTables Card-->
+			<div class="card mb-3">
+				<div class="card-header">
+					<i class="fa fa-plus"></i><span> Informazioni sull'area</span>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<form id="setArea" method="post">
+							<div class="form-group">
+								<label for="areaName">Nome: </label>
+								<input type="text" name="areaName" class="form-control" id="areaName" required/>
+							</div>
+							<div class="form-group">
+								<label for="temp">Temperatura da impostare: </label>
+								<input class="form-control" type="number" value="20" min="15" max="30" name="temp" id="temp" required/>
+							</div>
+							<button class="btn btn-primary" type="submit">Aggiungi area</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.container-fluid-->
+		<!-- /.content-wrapper-->
+		<footer class="sticky-footer">
+			<div class="container">
+				<div class="text-center">
+					<p>
+						<Copyright © EzioHouse 2018>
+					</p>
+				</div>
+			</div>
+		</footer>
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top">
+			<i class="fa fa-angle-up"></i>
+		</a>
+		<!-- Logout Modal-->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+		 aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Pronto per uscire?</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Chiudi">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Seleziona "logout" per uscire dal tuo account.</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+						<button class="btn btn-primary" onclick="logout()">Logout</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="vendor/jquery/jquery.min.js"></script>
+		<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+		<!-- Page level plugin JavaScript-->
+		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+		<!-- Custom scripts for all pages-->
+		<script src="js/sb-admin.min.js"></script>
+		<!-- Personal scripts -->
+		<script src="js/addArea.js"></script>
+	</div>
+</body>
+
+</html>

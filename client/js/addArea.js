@@ -1,20 +1,19 @@
 $(document).ready(function() {
 	isLoggedIn();
-	$('#setPsw').submit(function() {
+	$('#setArea').submit(function() {
 		$.ajax({
-			url: 'http://192.168.1.252:8080/auth/changePsw',
+			url: 'http://192.168.1.252:8080/api/areas',
 			headers: { Token: sessionStorage.getItem('access-token') },
-			data: { oldPsw: $('#oldPsw').val(), newPsw: $('#newPsw').val() },
-			type: 'PUT',
+			data: {
+				nome: $('#areaName').val(),
+				temperaturaImpostata: $('#temp').val(),
+			},
+			type: 'POST',
 			dataType: 'json',
 		})
 			.done(function(data) {
-				if (data.auth == false) alert(data.error);
-				else {
-					alert('La password è stata modificata con successo!');
-					sessionStorage.removeItem('access-token');
-					isLoggedIn();
-				}
+				if (data.auth) alert(data.message);
+				else alert(data.error);
 			})
 			.fail(function(data, status) {
 				alert(

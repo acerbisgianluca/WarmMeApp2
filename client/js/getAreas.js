@@ -9,13 +9,13 @@ $(document).ready(function() {
 			$.each(data, function() {
 				items.push([
 					this.nome,
+					this.temperaturaImpostata,
 					this.temperaturaAttuale,
-					"<input type = 'hidden' value = '" +
+					"<input type='checkbox' name='areaName[]' id='" +
 						this.nome +
-						"' name='nome[]'/><input class = 'form-control' type = 'number' value = '" +
-						this.temperaturaImpostata +
-						"' min = '15' max = '30' name = 'temp[]' required/>",
-					this.acceso,
+						"' value='" +
+						this.nome +
+						"'>",
 				]);
 			});
 
@@ -23,13 +23,12 @@ $(document).ready(function() {
 				searching: false,
 				paging: false,
 				lengthChange: false,
-				processing: true,
 				data: items,
 				columns: [
-					{ title: 'Area' },
+					{ title: 'Nome' },
+					{ title: 'Temperatura impostata' },
 					{ title: 'Temperatura attuale' },
-					{ title: 'Imposta temperatura', orderable: false },
-					{ title: 'Acceso' },
+					{ title: 'Cancella', orderable: false },
 				],
 			});
 		},
@@ -41,28 +40,29 @@ $(document).ready(function() {
 		},
 	});
 
-	$('#setTemp').submit(function() {
-		var nomi = [],
-			temps = [];
-		$("input[name='nome\\[\\]']").each(function() {
-			nomi.push($(this).val());
+	$('#submit').click(function() {
+		var ids = [];
+		$('input:checkbox:checked').each(function() {
+			ids.push($(this).val());
 		});
-		$("input[name='temp\\[\\]']").each(function() {
-			temps.push($(this).val());
-		});
-		nomi.forEach(function(v, i) {
+		ids.forEach(function(v, i) {
 			$.ajax({
 				url: 'http://192.168.1.252:8080/api/areas/' + v,
 				headers: { Token: sessionStorage.getItem('access-token') },
-				data: { temperaturaImpostata: temps[i] },
-				type: 'PUT',
+				type: 'DELETE',
 				dataType: 'json',
 			})
 				.done(function(data) {
-					if (i + 1 == nomi.length) {
-						alert('I dati sono stati inviati correttamente');
-						aggiorna();
-					}
+					if (data.auth)
+						if (i + 1 == ids.length) {
+							alert(data.message);
+							aggiorna();
+						} else {
+							if (i + 1 == ids.length) {
+								alert(data.error);
+								aggiorna();
+							}
+						}
 				})
 				.fail(function(data, status) {
 					alert(
@@ -88,13 +88,13 @@ function aggiorna() {
 			$.each(data, function() {
 				items.push([
 					this.nome,
+					this.temperaturaImpostata,
 					this.temperaturaAttuale,
-					"<input type = 'hidden' value = '" +
+					"<input type='checkbox' name='areaName[]' id='" +
 						this.nome +
-						"' name='nome[]'/><input class = 'form-control' type = 'number' value = '" +
-						this.temperaturaImpostata +
-						"' min = '15' max = '30' name = 'temp[]' required/>",
-					this.acceso,
+						"' value='" +
+						this.nome +
+						"'>",
 				]);
 			});
 
@@ -102,21 +102,14 @@ function aggiorna() {
 				searching: false,
 				paging: false,
 				lengthChange: false,
-				processing: true,
 				data: items,
 				columns: [
-					{ title: 'Area' },
+					{ title: 'Nome' },
+					{ title: 'Temperatura impostata' },
 					{ title: 'Temperatura attuale' },
-					{ title: 'Imposta temperatura', orderable: false },
-					{ title: 'Acceso' },
+					{ title: 'Cancella', orderable: false },
 				],
 			});
-		},
-		error: function(data, status) {
-			alert(
-				"Devi eseguire l'accesso per poter accedere ai dati. Cliccando su 'OK' verrai reindirizzato alla pagina di accesso!"
-			);
-			window.location.replace('./login.html');
 		},
 	});
 }
@@ -125,3 +118,7 @@ function logout() {
 	sessionStorage.removeItem('access-token');
 	window.location.replace('./login.html');
 }
+
+$('#closeTable').click(function() {
+	document.getElementById('divTable').style.display = 'none';
+});
