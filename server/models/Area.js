@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var AreasSchema = new mongoose.Schema(
+let mongoose = require('mongoose');
+let AreasSchema = new mongoose.Schema(
 	{
 		nome: String,
 		temperaturaAttuale: Number,

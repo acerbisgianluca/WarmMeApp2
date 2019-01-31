@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var SensorSchema = new mongoose.Schema(
+let mongoose = require('mongoose');
+let TemperatureSchema = new mongoose.Schema(
 	{
 		idSensore: Number,
 		temperatura: Number,
@@ -8,6 +8,6 @@ var SensorSchema = new mongoose.Schema(
 	{ collection: 'temperature' }
 );
 
-mongoose.model('Temperature', SensorSchema);
+mongoose.model('Temperature', TemperatureSchema);
 
 module.exports = mongoose.model('Temperature');
