@@ -1,135 +1,182 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
+let express = require('express');
+let bodyParser = require('body-parser');
+let Sensors = require('./models/Sensors');
+let Temperature = require('./models/Temperature');
+let Area = require('./models/Area');
+let VerifyToken = require('./auth/VerifyToken');
+
+let router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-var Sensors = require('./data/Sensors');
-var Sensor = require('./data/Sensor');
-var Area = require('./data/Area');
-var VerifyToken = require('./auth/VerifyToken');
 
-router.get('/sensors', VerifyToken, function(req, res, next) {
-	Sensors.find().exec(function(err, sensors) {
+router.get('/sensors', VerifyToken, (req, res) => {
+	Sensors.find().exec((err, sensors) => {
 		if (err) throw err;
 		if (isEmpty(sensors))
-			return res.json({ auth: true, error: 'No sensors found' });
+			return res.json({ auth: true, error: 'Nessun sensore trovato' });
+
 		res.json(sensors);
 	});
 });
 
-router.get('/sensor/:id', VerifyToken, function(req, res, next) {
-	Sensor.find()
+// TODO aggiungere limit al client (/sensor/:id)
+// TODO /sensorAll/:id
+router.get('/temperature/:id', VerifyToken, (req, res) => {
+	Temperature.find()
 		.where('idSensore')
 		.equals(req.params.id)
-		.limit(1)
 		.sort({ _id: -1 })
-		.exec(function(err, sensor) {
+		.exec((err, sensor) => {
 			if (err) throw err;
 			if (isEmpty(sensor))
 				return res.json({
 					auth: true,
-					error: 'No data found for that sensor',
+					error: 'Nessun dato per quel sensore',
 				});
-			res.json(sensor[0]);
-		});
-});
+			if (req.query.limit) return res.json(sensor[0]);
 
-router.get('/sensorAll/:id', VerifyToken, function(req, res, next) {
-	Sensor.find()
-		.where('idSensore')
-		.equals(req.params.id)
-		.sort({ _id: -1 })
-		.exec(function(err, sensor) {
-			if (err) throw err;
-			if (isEmpty(sensor))
-				return res.json({
-					auth: true,
-					error: 'No data found for that sensor',
-				});
 			res.json(sensor);
 		});
 });
 
-router.get('/areas', VerifyToken, function(req, res, next) {
-	Area.find().exec(function(err, areas) {
+router.get('/areas', VerifyToken, (req, res) => {
+	Area.find().exec((err, areas) => {
 		if (err) throw err;
 		if (isEmpty(areas))
-			return res.json({ auth: true, error: 'No sensors found' });
+			return res.json({ auth: true, error: 'Nessun sensore trovato' });
 		res.json(areas);
 	});
 });
 
-router.post('/setTemp', VerifyToken, function(req, res, next) {
-	Area.findOne({ nome: req.body.nome }, function(err, area) {
-		if (err) return handleError(err);
+// TODO /setTemp diventa PUT /areas
+router.put('/areas/:nome', VerifyToken, (req, res) => {
+	Area.findOne({ nome: req.params.nome }, (err, area) => {
+		if (err) throw err;
 		area.temperaturaImpostata = req.body.temperaturaImpostata;
 		if (area.temperaturaAttuale <= area.temperaturaImpostata + 1)
 			area.acceso = true;
 		else area.acceso = false;
-		area.save(function(err, updatedArea) {
+
+		area.save((err) => {
 			if (err)
 				return res.json({
 					auth: false,
-					error: 'Impossibile salvare i dati!',
+					error: 'Impossibile impostare la temperatura!',
 				});
+
 			res.json({
 				auth: true,
-				message: 'I dati sono stati aggiornati con successo!',
+				message: 'La temperatura è stata aggiornata con successo!',
 			});
 		});
 	});
 });
 
-router.post('/addSensor', VerifyToken, function(req, res, next) {
-	Sensors.findOne({ id: req.body.id }, function(err, sensor) {
+// TODO era addSensor ora diventa POST /sensors
+router.post('/sensors', VerifyToken, (req, res) => {
+	Sensors.findOne({ id: req.body.id }, (err, sensor) => {
 		if (err)
 			return res.json({
 				auth: false,
-				error: 'Impossibile controllare se il sensore esiste già.',
+				error: 'Impossibile controllare se il sensore esiste già!',
 			});
+
 		if (sensor)
 			return res.json({
 				auth: false,
 				error: 'Un sensore con questo id esiste già!',
 			});
-		Sensors.create({ id: req.body.id, area: req.body.area }, function(
-			err,
-			addedSensor
-		) {
+
+		Sensors.create({ id: req.body.id, area: req.body.area }, (err) => {
 			if (err)
 				return res.json({
 					auth: false,
-					error: 'Impossibile creare il sensore',
+					error: 'Impossibile aggiungere il sensore!',
 				});
 			res.json({
 				auth: true,
-				message: 'Il sensore è stato aggiunto con successo',
+				message: 'Il sensore è stato aggiunto con successo!',
 			});
 		});
 	});
 });
 
-router.post('/delSensor', VerifyToken, function(req, res, next) {
-	Sensors.find({ id: req.body.id })
+router.post('/areas', VerifyToken, (req, res) => {
+	Area.findOne({ nome: req.body.nome }, (err, area) => {
+		if (err)
+			return res.json({
+				auth: false,
+				error: 'Impossibile controllare se il sensore esiste già!',
+			});
+
+		if (area)
+			return res.json({
+				auth: false,
+				error: 'Un\'area con questo id esiste già!',
+			});
+
+		Area.create(
+			{
+				nome: req.body.nome,
+				temperaturaAttuale: 15,
+				temperaturaImpostata: req.body.temperaturaImpostata,
+				acceso: false,
+			},
+			(err) => {
+				if (err)
+					return res.json({
+						auth: false,
+						error: 'Impossibile aggiungere l\'area!',
+					});
+				res.json({
+					auth: true,
+					message: 'L\'area è stata aggiunta con successo!',
+				});
+			}
+		);
+	});
+});
+
+router.delete('/areas/:nome', VerifyToken, (req, res) => {
+	Area.find({ nome: req.params.nome })
 		.remove()
-		.exec(function(err, removedSensor) {
+		.exec((err) => {
 			if (err)
 				return res.json({
 					auth: false,
-					error: 'Impossibile eliminare il sensore',
+					error: 'Impossibile eliminare l\'area!',
 				});
+
 			res.json({
 				auth: true,
-				message: 'Il sensore è stato eliminato con successo',
+				message: 'L\'area è stata eliminata con successo!',
 			});
 		});
 });
 
-function isEmpty(obj) {
-	for (var key in obj) {
+// TODO era delSensor ora diventa DELETE /sensors/:id
+router.delete('/sensors/:id', VerifyToken, (req, res) => {
+	Sensors.find({ id: req.params.id })
+		.remove()
+		.exec((err) => {
+			if (err)
+				return res.json({
+					auth: false,
+					error: 'Impossibile eliminare il sensore!',
+				});
+
+			res.json({
+				auth: true,
+				message: 'Il sensore è stato eliminato con successo!',
+			});
+		});
+});
+
+let isEmpty = (obj) => {
+	for (let key in obj) {
 		if (hasOwnProperty.call(obj, key)) return false;
 	}
 	return true;
-}
+};
 
 module.exports = router;

@@ -1,65 +1,70 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
+let express = require('express');
+let bodyParser = require('body-parser');
+let User = require('../models/Users');
+let jwt = require('jsonwebtoken');
+let bcrypt = require('bcryptjs');
+let config = require('../config');
+let VerifyToken = require('./VerifyToken');
+
+let router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-var User = require('../user/User');
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-var config = require('../config');
-var VerifyToken = require('./VerifyToken');
 
-router.post('/register', function(req, res, next) {
-	var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+router.post('/register', (req, res) => {
+	let hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
-	User.findOne({ name: req.body.username }, function(err, user) {
+	User.findOne({ nome: req.body.username }, function(err, user) {
 		if (err)
 			return res
 				.status(500)
-				.send('Un altro utente è già registrato con questa email.');
+				.send('C\'è un problema nella registrazione dell\'utente.');
+
 		if (user)
 			return res
-				.status(500)
-				.send("C'è un problema nella registrazione dell'utente.");
+				.status(409)
+				.send('Un altro utente è già registrato con questa email.');
+
 		User.create(
 			{
-				name: req.body.username,
+				nome: req.body.username,
 				email: req.body.email,
 				password: hashedPassword,
 			},
-			function(err, user) {
+			(err, user) => {
 				if (err)
 					return res
 						.status(500)
 						.send(
-							"C'è un problema nella registrazione dell'utente."
+							'C\'è un problema nella registrazione dell\'utente.'
 						);
-				var token = jwt.sign({ username: user.name }, config.secret);
+
+				let token = jwt.sign({ username: user.nome }, config.secret);
 				res.status(200).send({ auth: true, token: token });
 			}
 		);
 	});
 });
 
-router.post('/changePsw', VerifyToken, function(req, res, next) {
-	User.findOne({ name: req.username }, function(err, user) {
+router.put('/changePsw', VerifyToken, (req, res) => {
+	User.findOne({ nome: req.username }, (err, user) => {
 		if (err) throw err;
-		var passwordIsValid = bcrypt.compareSync(
+		let passwordIsValid = bcrypt.compareSync(
 			req.body.oldPsw,
 			user.password
 		);
 		if (!passwordIsValid)
 			return res.json({
 				auth: false,
-				error: 'La password vecchia non è valida!',
+				error: 'La password vecchia non è corretta!',
 			});
 		user.password = bcrypt.hashSync(req.body.newPsw, 8);
-		user.save(function(err, updatedUser) {
+		user.save((err) => {
 			if (err)
 				return res.json({
 					auth: false,
-					error: 'Impossibile salvare i dati!',
+					error: 'Errore nell\'aggiornamento della password!',
 				});
+
 			res.json({
 				auth: true,
 				message: 'La password è stata aggiornata con successo!',
@@ -68,17 +73,19 @@ router.post('/changePsw', VerifyToken, function(req, res, next) {
 	});
 });
 
-router.post('/login', function(req, res, next) {
-	User.findOne({ name: req.body.username }, function(err, user) {
+router.post('/login', (req, res) => {
+	User.findOne({ nome: req.body.username }, function(err, user) {
 		if (err)
 			return res
 				.status(500)
 				.json({ auth: false, error: 'Errore nel server.' });
+
 		if (!user)
 			return res
 				.status(404)
 				.json({ auth: false, error: 'Nessun utente trovato.' });
-		var passwordIsValid = bcrypt.compareSync(
+
+		let passwordIsValid = bcrypt.compareSync(
 			req.body.password,
 			user.password
 		);
@@ -86,7 +93,8 @@ router.post('/login', function(req, res, next) {
 			return res
 				.status(401)
 				.json({ auth: false, error: 'Password non valida.' });
-		var token = jwt.sign({ username: user.name }, config.secret);
+
+		let token = jwt.sign({ username: user.nome }, config.secret);
 		res.status(200).json({ auth: true, token: token });
 	});
 });
