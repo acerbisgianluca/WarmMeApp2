@@ -5,7 +5,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.error) return alert('Nessuna area registrata!');
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.nome,
@@ -41,7 +41,7 @@ $(document).ready(function() {
 	});
 
 	$('#submit').click(function() {
-		var ids = [];
+		let ids = [];
 		$('input:checkbox:checked').each(function() {
 			ids.push($(this).val());
 		});
@@ -53,6 +53,8 @@ $(document).ready(function() {
 				dataType: 'json',
 			})
 				.done(function(data) {
+					if (data.error) return alert(data.error);
+
 					if (data.auth)
 						if (i + 1 == ids.length) {
 							alert(data.message);
@@ -76,7 +78,7 @@ $(document).ready(function() {
 });
 
 function aggiorna() {
-	table.destroy();
+	table.clear();
 	$.ajax({
 		url: 'http://192.168.1.252:8080/api/areas',
 		headers: { Token: sessionStorage.getItem('access-token') },
@@ -84,7 +86,7 @@ function aggiorna() {
 		success: function(data) {
 			if (data.error) return alert('Nessuna area registrata!');
 
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.nome,
@@ -98,18 +100,8 @@ function aggiorna() {
 				]);
 			});
 
-			table = $('#areasTable').DataTable({
-				searching: false,
-				paging: false,
-				lengthChange: false,
-				data: items,
-				columns: [
-					{ title: 'Nome' },
-					{ title: 'Temperatura impostata' },
-					{ title: 'Temperatura attuale' },
-					{ title: 'Cancella', orderable: false },
-				],
-			});
+			table.rows.add(items);
+			table.draw();
 		},
 	});
 }

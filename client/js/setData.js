@@ -5,7 +5,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.error) return alert('Nessuna area registrata!');
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.nome,
@@ -42,7 +42,7 @@ $(document).ready(function() {
 	});
 
 	$('#setTemp').submit(function() {
-		var nomi = [],
+		let nomi = [],
 			temps = [];
 		$("input[name='nome\\[\\]']").each(function() {
 			nomi.push($(this).val());
@@ -76,7 +76,7 @@ $(document).ready(function() {
 });
 
 function aggiorna() {
-	table.destroy();
+	table.clear();
 	$.ajax({
 		url: 'http://192.168.1.252:8080/api/areas',
 		headers: { Token: sessionStorage.getItem('access-token') },
@@ -84,7 +84,7 @@ function aggiorna() {
 		success: function(data) {
 			if (data.error) return alert('Nessuna area registrata!');
 
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.nome,
@@ -98,19 +98,8 @@ function aggiorna() {
 				]);
 			});
 
-			table = $('#areasTable').DataTable({
-				searching: false,
-				paging: false,
-				lengthChange: false,
-				processing: true,
-				data: items,
-				columns: [
-					{ title: 'Area' },
-					{ title: 'Temperatura attuale' },
-					{ title: 'Imposta temperatura', orderable: false },
-					{ title: 'Acceso' },
-				],
-			});
+			table.rows.add(items);
+			table.draw();
 		},
 		error: function(data, status) {
 			alert(
