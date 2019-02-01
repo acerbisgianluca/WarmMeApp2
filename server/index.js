@@ -52,8 +52,8 @@ let insert = (obj) => {
 												umidità / cont
 											).toFixed(2);
 											if (
-												area.temperaturaAttuale <=
-												area.temperaturaImpostata + 1
+												area.temperaturaAttuale <
+												area.temperaturaImpostata
 											)
 												area.acceso = true;
 											else area.acceso = false;
