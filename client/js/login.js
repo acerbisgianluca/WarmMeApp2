@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	$('#loginform').submit(function() {
 		$.ajax({
-			url: 'http://192.168.1.252:8080/auth/login',
+			url: 'https://casaacerbis.dlinkddns.com/node/auth/login',
 			data: {
 				username: $('#username').val(),
 				password: $('#password').val(),

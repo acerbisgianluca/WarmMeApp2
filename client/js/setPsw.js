@@ -2,7 +2,7 @@ $(document).ready(function() {
 	isLoggedIn();
 	$('#setPsw').submit(function() {
 		$.ajax({
-			url: 'http://192.168.1.252:8080/auth/changePsw',
+			url: 'https://casaacerbis.dlinkddns.com/node/auth/changePsw',
 			headers: { Token: sessionStorage.getItem('access-token') },
 			data: { oldPsw: $('#oldPsw').val(), newPsw: $('#newPsw').val() },
 			type: 'PUT',

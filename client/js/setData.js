@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/areas',
+		url: 'https://casaacerbis.dlinkddns.com/node/api/areas',
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 		success: function(data) {
@@ -52,7 +52,7 @@ $(document).ready(function() {
 		});
 		nomi.forEach(function(v, i) {
 			$.ajax({
-				url: 'http://192.168.1.252:8080/api/areas/' + v,
+				url: 'https://casaacerbis.dlinkddns.com/node/api/areas/' + v,
 				headers: { Token: sessionStorage.getItem('access-token') },
 				data: { temperaturaImpostata: temps[i] },
 				type: 'PUT',
@@ -78,7 +78,7 @@ $(document).ready(function() {
 function aggiorna() {
 	table.clear();
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/areas',
+		url: 'https://casaacerbis.dlinkddns.com/node/api/areas',
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 		success: function(data) {
