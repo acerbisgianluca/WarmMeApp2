@@ -138,38 +138,64 @@ router.post('/areas', VerifyToken, (req, res) => {
 });
 
 router.delete('/areas/:nome', VerifyToken, (req, res) => {
-	Area.find({ nome: req.params.nome })
-		.remove()
-		.exec((err) => {
-			if (err)
-				return res.json({
-					auth: false,
-					error: 'Impossibile eliminare l\'area!',
-				});
-
-			res.json({
-				auth: true,
-				message: 'L\'area è stata eliminata con successo!',
+	Area.count({}, (err, count) => {
+		if (err)
+			return res.json({
+				auth: false,
+				error: 'Impossibile eliminare l\'area!',
 			});
-		});
+		if (count === 1)
+			return res.json({
+				auth: false,
+				error: 'Impossibile eliminare l\'ultima area!',
+			});
+
+		Area.find({ nome: req.params.nome })
+			.remove()
+			.exec((err) => {
+				if (err)
+					return res.json({
+						auth: false,
+						error: 'Impossibile eliminare l\'area!',
+					});
+
+				res.json({
+					auth: true,
+					message: 'L\'area è stata eliminata con successo!',
+				});
+			});
+	});
 });
 
 // TODO era delSensor ora diventa DELETE /sensors/:id
 router.delete('/sensors/:id', VerifyToken, (req, res) => {
-	Sensors.find({ id: req.params.id })
-		.remove()
-		.exec((err) => {
-			if (err)
-				return res.json({
-					auth: false,
-					error: 'Impossibile eliminare il sensore!',
-				});
-
-			res.json({
-				auth: true,
-				message: 'Il sensore è stato eliminato con successo!',
+	Sensors.count({}, (err, count) => {
+		if (err)
+			return res.json({
+				auth: false,
+				error: 'Impossibile eliminare il sensore',
 			});
-		});
+		if (count === 1)
+			return res.json({
+				auth: false,
+				error: 'Impossibile eliminare l\'ultimo sensore',
+			});
+
+		Sensors.find({ id: req.params.id })
+			.remove()
+			.exec((err) => {
+				if (err)
+					return res.json({
+						auth: false,
+						error: 'Impossibile eliminare il sensore!',
+					});
+
+				res.json({
+					auth: true,
+					message: 'Il sensore è stato eliminato con successo!',
+				});
+			});
+	});
 });
 
 let isEmpty = (obj) => {
