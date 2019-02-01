@@ -10,7 +10,7 @@ $(document).ready(function() {
 	});
 
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/sensors',
+		url: 'https://casaacerbis.dlinkddns.com/node/api/sensors',
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 		success: function(data) {
@@ -61,7 +61,7 @@ $(document).ready(function() {
 		});
 		ids.forEach(function(v, i) {
 			$.ajax({
-				url: 'http://192.168.1.252:8080/api/sensors/' + v,
+				url: 'https://casaacerbis.dlinkddns.com/node/api/sensors/' + v,
 				headers: { Token: sessionStorage.getItem('access-token') },
 				type: 'DELETE',
 				dataType: 'json',
@@ -94,7 +94,7 @@ $(document).ready(function() {
 function aggiorna() {
 	table.clear();
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/sensors',
+		url: 'https://casaacerbis.dlinkddns.com/node/api/sensors',
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 		success: function(data) {
@@ -126,7 +126,7 @@ function showTable(id) {
 	document.getElementById('sensor').innerHTML = ' Storico sensore ' + id;
 
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/temperature/' + id,
+		url: 'https://casaacerbis.dlinkddns.com/node/api/temperature/' + id,
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 		success: function(data) {

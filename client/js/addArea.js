@@ -2,7 +2,7 @@ $(document).ready(function() {
 	isLoggedIn();
 	$('#setArea').submit(function() {
 		$.ajax({
-			url: 'http://192.168.1.252:8080/api/areas',
+			url: 'https://casaacerbis.dlinkddns.com/node/api/areas',
 			headers: { Token: sessionStorage.getItem('access-token') },
 			data: {
 				nome: $('#areaName').val(),

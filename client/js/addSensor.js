@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	isLoggedIn();
 	$.ajax({
-		url: 'http://192.168.1.252:8080/api/areas',
+		url: 'https://casaacerbis.dlinkddns.com/node/api/areas',
 		headers: { Token: sessionStorage.getItem('access-token') },
 		dataType: 'json',
 	})
@@ -22,7 +22,7 @@ $(document).ready(function() {
 
 	$('#setSensor').submit(function() {
 		$.ajax({
-			url: 'http://192.168.1.252:8080/api/sensors',
+			url: 'https://casaacerbis.dlinkddns.com/node/api/sensors',
 			headers: { Token: sessionStorage.getItem('access-token') },
 			data: { id: $('#sensorId').val(), area: $('#area').val() },
 			type: 'POST',
