@@ -53,7 +53,7 @@ router.put('/areas/:nome', VerifyToken, (req, res) => {
 	Area.findOne({ nome: req.params.nome }, (err, area) => {
 		if (err) throw err;
 		area.temperaturaImpostata = req.body.temperaturaImpostata;
-		if (area.temperaturaAttuale <= area.temperaturaImpostata + 1)
+		if (area.temperaturaAttuale < area.temperaturaImpostata)
 			area.acceso = true;
 		else area.acceso = false;
 
