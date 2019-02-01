@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	table1 = $('#sensorTable').DataTable({
 		searching: false,
-		order: [[0, 'asc']],
+		order: [[0, 'desc']],
 		columns: [
 			{ title: 'Data e ora' },
 			{ title: 'Temperatura' },
@@ -15,7 +15,7 @@ $(document).ready(function() {
 		dataType: 'json',
 		success: function(data) {
 			if (data.error) return alert('Nessun sensore registrato!');
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.id,
@@ -55,7 +55,7 @@ $(document).ready(function() {
 	});
 
 	$('#submit').click(function() {
-		var ids = [];
+		let ids = [];
 		$('input:checkbox:checked').each(function() {
 			ids.push($(this).val());
 		});
@@ -67,6 +67,8 @@ $(document).ready(function() {
 				dataType: 'json',
 			})
 				.done(function(data) {
+					if (data.error) return alert(data.error);
+
 					if (data.auth)
 						if (i + 1 == ids.length) {
 							alert(data.message);
@@ -90,7 +92,7 @@ $(document).ready(function() {
 });
 
 function aggiorna() {
-	table.destroy();
+	table.clear();
 	$.ajax({
 		url: 'http://192.168.1.252:8080/api/sensors',
 		headers: { Token: sessionStorage.getItem('access-token') },
@@ -98,7 +100,7 @@ function aggiorna() {
 		success: function(data) {
 			if (data.error) return alert('Nessun sensore registrato!');
 
-			var items = [];
+			let items = [];
 			$.each(data, function() {
 				items.push([
 					this.id,
@@ -112,24 +114,14 @@ function aggiorna() {
 				]);
 			});
 
-			table = $('#sensorsTable').DataTable({
-				searching: false,
-				paging: false,
-				lengthChange: false,
-				data: items,
-				columns: [
-					{ title: 'Id' },
-					{ title: 'Area' },
-					{ title: 'Dettagli', orderable: false },
-					{ title: 'Cancella', orderable: false },
-				],
-			});
+			table.rows.add(items);
+			table.draw();
 		},
 	});
 }
 
 function showTable(id) {
-	table1.destroy();
+	table1.clear();
 	document.getElementById('divTable').style.display = 'block';
 	document.getElementById('sensor').innerHTML = ' Storico sensore ' + id;
 
@@ -142,44 +134,36 @@ function showTable(id) {
 				return alert(
 					'Nessun valore registrato per il sensore ' + id + '!'
 				);
-			var objs = [];
+			let objs = [];
 			$.each(data, function() {
 				objs.push([
 					new Date(
 						parseInt(this._id.substring(0, 8), 16) * 1000
-					).toUTCString(),
+					).toLocaleString(),
 					this.temperatura,
 					this.umidità,
 				]);
 			});
 
-			table1 = $('#sensorTable').DataTable({
-				searching: false,
-				order: [[0, 'asc']],
-				data: objs,
-				columns: [
-					{ title: 'Data e ora' },
-					{ title: 'Temperatura' },
-					{ title: 'Umidità' },
-				],
-			});
+			table1.rows.add(objs);
+			table1.draw();
 
-			var temps = [];
-			var date = [];
+			let temps = [];
+			let date = [];
 			$.each(data, function() {
 				temps.push(this.temperatura);
 				date.push(
-					new Date(parseInt(this._id.substring(0, 8), 16) * 1000)
-						.toUTCString()
-						.substring(17, 25)
+					new Date(
+						parseInt(this._id.substring(0, 8), 16) * 1000
+					).toLocaleTimeString()
 				);
 			});
 
-			var ctx = document.getElementById('grafico');
-			var chart = new Chart(ctx, {
+			let ctx = document.getElementById('grafico');
+			let chart = new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: date.slice(0, 0 + 10),
+					labels: date.slice(0, 0 + 15).reverse(),
 					datasets: [
 						{
 							label: 'Temperatura',
@@ -193,7 +177,7 @@ function showTable(id) {
 							pointHoverBackgroundColor: 'rgba(2,117,216,1)',
 							pointHitRadius: 20,
 							pointBorderWidth: 2,
-							data: temps.slice(0, 0 + 10),
+							data: temps.slice(0, 0 + 15).reverse(),
 						},
 					],
 				},
