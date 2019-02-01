@@ -52,7 +52,7 @@ function isLoggedIn() {
 }
 
 function isEmpty(obj) {
-	for (var key in obj) {
+	for (let key in obj) {
 		if (hasOwnProperty.call(obj, key)) return false;
 	}
 	return true;
