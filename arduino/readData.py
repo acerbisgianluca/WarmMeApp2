@@ -2,15 +2,20 @@ import serial
 import paho.mqtt.client as mqtt
 import ssl
 import time
+import configparser
 
 
 def connected(client, userdata, flags, rc):
     print("Connesso al broker")
 
 
+# Carico la configurazione
+config = configparser.ConfigParser()
+config.read('config.ini')
 # Creo il client MQTT, imposto l'utente e TLS e mi connetto
 client = mqtt.Client("arduino")
-client.username_pw_set("arduino", password="esamequinta")
+client.username_pw_set(
+    config["MQTT"]["username"], password=config["MQTT"]["password"])
 client.tls_set_context(ssl.create_default_context())
 client.connect("mqtt.acerbisgianluca.com", port=8883)
 client.on_connect = connected
