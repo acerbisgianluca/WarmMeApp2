@@ -15,6 +15,9 @@ app.use('/auth', AuthController);
 app.use('/api', api);
 app.listen(8080);
 
+cron.start();
+console.log('Cronjob di controllo dei relays avviato!');
+
 let insert = (obj) => {
 	let temperatura = 0.0;
 	let umidità = 0.0;
@@ -72,12 +75,13 @@ let insert = (obj) => {
 };
 
 client.on('connect', () => {
+	console.log('Connesso al broker!');
 	client.subscribe('arduinodata');
-	console.log('Subscribed');
+	console.log('Iscritto ad arduinodata!');
 });
 
 client.on('message', (topic, message) => {
-	console.log('Received: ' + message);
+	console.log('Messaggio ricevuto da : ' + topic + '\t' + message);
 	let obj = JSON.parse(message.toString());
 	insert(obj);
 });
